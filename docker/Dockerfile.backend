@@ -15,6 +15,8 @@ FROM node:20-alpine
   COPY packages/db ./packages/db
   COPY packages/typescript-config ./packages/typescript-config
 
+  RUN cd /app/packages/db && pnpm exec prisma generate
+
   WORKDIR /app/apps/backend
 
   RUN pnpm build
