@@ -1,17 +1,18 @@
-import { PrismaClient } from "./generated/prisma/client.js";
+import { PrismaClient } from "./generated/prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { Pool } from "pg";
 
-// 1. Declare the global variable to hold the Prisma instance
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-// 2. Create the instance OR reuse the existing one (Notice the {} added here!)
-export const prisma = globalForPrisma.prisma ?? new PrismaClient({});
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const adapter = new PrismaPg(pool);
 
-// 3. If we are not in production, save the instance to the global variable
+export const prisma = globalForPrisma.prisma ?? new PrismaClient({ adapter });
+
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;
 }
 
-// 4. Export the types
-export * from "./generated/prisma/client.js";
+export * from "./generated/prisma/client";
