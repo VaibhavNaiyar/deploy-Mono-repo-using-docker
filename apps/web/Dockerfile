@@ -1,0 +1,26 @@
+FROM node:20-alpine
+
+RUN npm install -g pnpm
+
+WORKDIR /app
+
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY apps/web/package.json ./apps/web/
+COPY packages/db/package.json ./packages/db/
+COPY packages/ui/package.json ./packages/ui/
+COPY packages/typescript-config/package.json ./packages/typescript-config/
+
+RUN pnpm install --frozen-lockfile
+
+COPY apps/web ./apps/web
+COPY packages/db ./packages/db
+COPY packages/ui ./packages/ui
+COPY packages/typescript-config ./packages/typescript-config
+
+WORKDIR /app/apps/web
+
+RUN pnpm build
+
+EXPOSE 3000
+
+CMD ["pnpm", "start"]

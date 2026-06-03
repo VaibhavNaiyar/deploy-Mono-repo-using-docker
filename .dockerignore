@@ -1,0 +1,38 @@
+# Dependencies
+node_modules
+**/node_modules
+
+# Build outputs
+dist
+**/dist
+.next
+**/.next
+
+# Turbo cache
+.turbo
+**/.turbo
+
+# Environment files
+.env
+.env.*
+**/.env
+**/.env.*
+
+# Git
+.git
+.gitignore
+
+# Logs
+*.log
+**/*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode
+.idea
+
+# Prisma generated (will be regenerated)
+packages/db/generated
