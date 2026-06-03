@@ -1,4 +1,4 @@
-name: Deploy the frontend
+name: Deploy the websocket server
 on:
   push:
     branches: [ main ]
@@ -19,9 +19,12 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ./docker/Dockerfile.frontend
-          build-args: |
-            DATABASE_URL=${{ secrets.DATABASE_URL }}
+          file: ./docker/Dockerfile.ws
           push: true
-          tags: 100xdevs/todo-app-frontend:${{ github.sha }}
-      ## Step to deploy this to a VM
+          tags: 100xdevs/todo-app-websocket:${{ github.sha }}
+      - name: Deploy to the VM
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/ssh_key
+          chmod 600 ~/ssh_key
+          ssh -o StrictHostKeyChecking=no -i ~/ssh_key root@64.227.169.180 -t "docker rm -f user_ws ; docker run --name user_ws -d -p 8081:8081 100xdevs/todo-app-websocket:${{ github.sha }}"
+          
